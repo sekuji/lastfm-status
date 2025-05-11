@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="320" height="84" style="background: transparent;">
+    <title id="cardTitle">{% if nowPlaying %}Now playing on Last.fm{% else %}Last.fm Status{% endif %}</title>
+    <style>
+        .artist {
+            fill: rgb(220,220,230);
+            font-weight: 500;
+            font-size: 14px;
+            font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif;
+            width: 220px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .song {
+            fill: rgb(139,160,178);
+            font-size: 14px;
+            font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif;
+            width: 220px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .bar {
+            fill: {{ bar_color }};
+            rx: 2px;
+            ry: 2px;
+        }
+
+        .bars {
+            transform: translate(85px, 70px) rotate(180deg) rotateY(-180deg);
+        }
+        
+        {% if nowPlaying %}
+            {% for position in bar_positions %}
+                #bar-{{ loop.index }} {
+                    animation: equalizer{{ loop.index }} 1.8s ease-in-out infinite;
+                }
+                
+                @keyframes equalizer{{ loop.index }} {
+                    0%, 100% {
+                        opacity: 0.6;
+                        height: {{ (bar_length * 0.2) + ((loop.index % 7) * 1.5) }}px;
+                    }
+                    50% {
+                        opacity: 0.9;
+                        height: {{ (bar_length * 0.6) + ((loop.index % 5) * 1.5) }}px;
+                    }
+                }
+            {% endfor %}
+        {% endif %}
+    </style>
+    
+    <!-- Album Cover -->
+    {% if isDefaultCover %}
+        <image x="10" y="10" width="64" height="64" 
+            href="{{ cover }}" 
+            style="border-radius: 10px;" />
+    {% else %}
+        <foreignObject x="10" y="10" width="64" height="64">
+            <div xmlns="http://www.w3.org/1999/xhtml" style="width: 64px; height: 64px; border-radius: 10px; overflow: hidden;">
+                <img src="{{ cover }}" width="64" height="64" style="border-radius: 10px; object-fit: cover;" />
+            </div>
+        </foreignObject>
+    {% endif %}
+    
+    <!-- Artist and Song Info -->
+    <text x="85" y="30" class="artist">{{ artist }}</text>
+    <text x="85" y="50" class="song">{{ title }}</text>
+    
+    <!-- Visualizer Bars -->
+    <g class="bars">
+        {% for position in bar_positions %}
+            <rect id="bar-{{ loop.index }}" 
+                  x="{{ position }}" 
+                  y="0" 
+                  width="{{ bar_width }}" 
+                  height="{% if nowPlaying %}{{ (bar_length * 0.2) + ((loop.index % 7) * 1.5) }}{% else %}2{% endif %}" 
+                  class="bar" 
+                  rx="2" 
+                  ry="2" 
+                  {% if not nowPlaying %}
+                  style="opacity: 0.4;"
+                  {% endif %}
+                  ></rect>
+        {% endfor %}
+    </g>
+</svg>
