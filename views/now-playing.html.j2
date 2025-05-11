@@ -1,56 +1,51 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="320" height="84" style="background: transparent;">
-    <title id="cardTitle">{% if nowPlaying %}Now playing on Last.fm{% else %}Last.fm Status{% endif %}</title>
+    <title id="cardTitle">{% if nowPlaying %}Now playing on Last.fm{% else %}Sekuji's Last.fm Status{% endif %}</title>
     <style>
-        .artist {
-            fill: rgb(220,220,230);
-            font-weight: 500;
-            font-size: 14px;
-            font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif;
-            width: 220px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
+    .artist {
+        fill: rgb(220,220,230);
+        font-weight: 500;
+        font-size: 14px;
+        font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif;
+        width: 220px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
 
-        .song {
-            fill: rgb(139,160,178);
-            font-size: 14px;
-            font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif;
-            width: 220px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
+    .song {
+        fill: rgb(139,160,178);
+        font-size: 14px;
+        font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif;
+        width: 220px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
 
-        .bar {
-            fill: {{ bar_color }};
-            rx: 2px;
-            ry: 2px;
-        }
-
-        .bars {
-            transform: translate(85px, 70px) rotate(180deg) rotateY(-180deg);
-        }
-        
+    .bar {
+        fill: {{ bar_color }};
+        rx: 2px; /* Rounded corners for bars */
+        ry: 2px;
         {% if nowPlaying %}
-            {% for position in bar_positions %}
-                #bar-{{ loop.index }} {
-                    animation: equalizer{{ loop.index }} 1.8s ease-in-out infinite;
-                }
-                
-                @keyframes equalizer{{ loop.index }} {
-                    0%, 100% {
-                        opacity: 0.6;
-                        height: {{ (bar_length * 0.2) + ((loop.index % 7) * 1.5) }}px;
-                    }
-                    50% {
-                        opacity: 0.9;
-                        height: {{ (bar_length * 0.6) + ((loop.index % 5) * 1.5) }}px;
-                    }
-                }
-            {% endfor %}
+        animation: sound linear infinite alternate;
         {% endif %}
-    </style>
+    }
+
+    .bars {
+        transform: translate(85px, 70px) rotate(180deg) rotateY(-180deg);
+    }
+
+    @keyframes sound {
+        0% {
+            opacity: 0.4;
+            height: {{ bar_length * 0.3 }}px;
+        }
+        100% {
+            opacity: 0.9;
+            height: {{ bar_length }}px;
+        }
+    }
+</style>
     
     <!-- Album Cover -->
     {% if isDefaultCover %}
@@ -73,17 +68,19 @@
     <g class="bars">
         {% for position in bar_positions %}
             <rect id="bar-{{ loop.index }}" 
-                  x="{{ position }}" 
-                  y="0" 
-                  width="{{ bar_width }}" 
-                  height="{% if nowPlaying %}{{ (bar_length * 0.2) + ((loop.index % 7) * 1.5) }}{% else %}2{% endif %}" 
-                  class="bar" 
-                  rx="2" 
-                  ry="2" 
-                  {% if not nowPlaying %}
-                  style="opacity: 0.4;"
-                  {% endif %}
-                  ></rect>
+                x="{{ position }}" 
+                y="0" 
+                width="{{ bar_width }}" 
+                height="{% if nowPlaying %}{{ bar_length * 0.3 }}{% else %}2{% endif %}" 
+                class="bar" 
+                rx="2" 
+                ry="2" 
+                {% if nowPlaying %}
+                style="animation-duration: {{ 800 + (loop.index * 100) }}ms; animation-delay: {{ (loop.index * -200) - (loop.index % 3 * 150) }}ms;"
+                {% else %}
+                style="opacity: 0.4; animation: none;"
+                {% endif %}
+            ></rect>
         {% endfor %}
     </g>
 </svg>
