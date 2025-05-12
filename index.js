@@ -168,7 +168,7 @@ app.get('/now-playing', async (req, res) => {
 
 // Home route
 app.get('/', (req, res) => {
-    res.send('Welcome! Visit <a href="/now-playing">/now-playing</a> to see your Last.fm status.');
+    res.send('Visit <a href="/now-playing">/now-playing</a> to see my Last.fm status.');
 });
 
 // Start the server
