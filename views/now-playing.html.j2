@@ -78,7 +78,9 @@
                 rx="2" 
                 ry="2" 
                 {% if nowPlaying %}
-                style="animation-duration: {{ 800 + (loop.index * 100) }}ms; animation-delay: {{ (loop.index * -200) - (loop.index % 3 * 150) }}ms;"
+                {% set random_duration = 400 + (range(0, 200) | random) %}
+                {% set random_delay = (range(-600, 0) | random) %}
+                style="animation-duration: {{ random_duration }}ms; animation-delay: {{ random_delay }}ms;"
                 {% else %}
                 style="opacity: 0.4; animation: none;"
                 {% endif %}
