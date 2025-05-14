@@ -115,7 +115,7 @@ async function getLastFmData() {
                 return {
                     nowPlaying: false,
                     title: 'Awaiting music',
-                    artist: 'Last.fm • Offline',
+                    artist: 'Status • Offline',
                     cover: DEFAULT_COVER,
                     bar_color: CONFIG.bar_color,
                     bar_positions: Array.from({ length: CONFIG.num_bars }, 
